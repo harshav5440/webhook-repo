@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Activity</title>
+</head>
+<body>
+
+<h3>Latest GitHub Events</h3>
+<ul id="list"></ul>
+
+<script>
+async function loadEvents() {
+  const res = await fetch("/events");
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(e => {
+    let text = "";
+
+    if (e.action === "PUSH") {
+      text = e.author + " pushed to " + e.to_branch;
+    } else if (e.action === "PULL_REQUEST") {
+      text = e.author + " submitted a pull request from " +
+             e.from_branch + " to " + e.to_branch;
+    }
+
+    const li = document.createElement("li");
+    li.innerText = text;
+    list.appendChild(li);
+  });
+}
+
+loadEvents();
+setInterval(loadEvents, 15000);
+</script>
+
+</body>
+</html>
